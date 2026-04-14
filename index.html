@@ -66,13 +66,29 @@
         return x;
       };
 
+      const getBounds = () => {
+        let minX = 0; let maxX = 0; let x = 0;
+        for (let i = 0; i < turns.length; i++) {
+          const ans = typeof turns[i].a === 'string' ? turns[i].a : '';
+          const pos = ans.includes('예') || ans.includes('맞') || ans.includes('정답') || ans.includes('그렇');
+          x += RESULT_X_OFFSET * (pos ? -1 : 1);
+          minX = Math.min(minX, x);
+          maxX = Math.max(maxX, x);
+        }
+        return { minX, maxX };
+      };
+
+      const { minX, maxX } = getBounds();
+      const centerX = (minX + maxX) / 2;
+      const dynamicNativeW = Math.max(10000, (maxX - minX) + 8000);
+
       useEffect(() => {
         const measureAndScale = () => {
           if (containerRef.current) {
             const availableW = containerRef.current.clientWidth - 40;
             const availableH = containerRef.current.clientHeight - 80;
 
-            const nativeW = 10000;
+            const nativeW = dynamicNativeW;
             const nativeH = (turns.length * RESULT_Y_OFFSET) + 1500;
 
             const scaleX = availableW / nativeW;
@@ -120,21 +136,21 @@
                 style={{
                   transform: `scale(${scale})`,
                   transformOrigin: 'top center',
-                  width: '10000px',
+                  width: `${dynamicNativeW}px`,
                   height: `${(turns.length * RESULT_Y_OFFSET) + 1500}px`,
                   position: 'relative',
                   transition: 'transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)'
                 }}
               >
-                <div className="absolute left-1/2 -translate-x-1/2 top-[80px] border-[12px] border-[#EAD2AC] bg-[#2A4B2A] text-white rounded-full px-32 py-12 font-black z-30 text-center shadow-2xl text-8xl">
+                <div className="absolute left-1/2 -translate-x-1/2 top-[80px] border-[12px] border-[#EAD2AC] bg-[#2A4B2A] text-white rounded-full px-32 py-12 font-black z-30 text-center shadow-2xl text-8xl" style={{ left: `calc(50% + ${-centerX}px)` }}>
                   모든 인물
                 </div>
                 {turns.length > 0 && (
-                  <div className="absolute left-1/2 -translate-x-1/2 top-[80px] w-[16px] h-[360px] bg-[#A3E6B5] z-10" />
+                  <div className="absolute left-1/2 -translate-x-1/2 top-[80px] w-[16px] h-[360px] bg-[#A3E6B5] z-10" style={{ left: `calc(50% + ${-centerX}px)` }} />
                 )}
 
                 {turns.map((turn, i) => {
-                  const x = getPosX(i);
+                  const x = getPosX(i) - centerX;
                   const y = i * RESULT_Y_OFFSET;
                   const topPos = y + 440;
                   const leftPos = `calc(50% + ${x}px)`;

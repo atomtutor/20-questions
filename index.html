@@ -248,8 +248,8 @@
 
         const combinedPrompt = `[시스템 지시사항]\n${systemPrompt}\n\n[사용자 질문]\n${promptText}`;
 
-        // 🌟 오직 단 하나의 모델만 직접 호출하도록 변경
-        const modelName = isCanvas ? "gemini-2.5-flash-preview-09-2025" : "gemini-1.5-flash";
+        // 🌟 오직 단 하나의 모델만 직접 호출하도록 변경 (1.5-flash 지원 종료로 인한 버전 업데이트)
+        const modelName = isCanvas ? "gemini-2.5-flash-preview-09-2025" : "gemini-2.5-flash";
 
         let retries = 0;
         while (retries < 2) {
@@ -395,8 +395,8 @@
                           {chat.role === 'user' ? <User size={16} className="text-indigo-600" /> : <Bot size={16} className="text-indigo-600" />}
                         </div>
                         <div className={`p-3 rounded-2xl text-[15px] leading-relaxed shadow-sm ${chat.role === 'user'
-                            ? 'bg-indigo-600 text-white rounded-tr-none'
-                            : 'bg-white text-slate-800 rounded-tl-none border border-slate-100'
+                          ? 'bg-indigo-600 text-white rounded-tr-none'
+                          : 'bg-white text-slate-800 rounded-tl-none border border-slate-100'
                           }`}>
                           {typeof chat.text === 'string' ? chat.text : ''}
                         </div>
